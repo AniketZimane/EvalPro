@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-lg bg-white shadow-lg rounded-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 text-white text-center py-4 text-xl font-semibold">
+            EduBot
+        </div>
+
+        <!-- Chatbox -->
+        <div id="chatbox" class="p-4 h-96 overflow-y-auto space-y-4">
+            <!-- Messages will be appended here -->
+        </div>
+
+        <!-- Input Field -->
+        <div class="flex border-t p-4 bg-gray-50">
+            <input id="userInput" type="text" 
+                class="flex-grow p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Type your message...">
+            <button onclick="sendMessage()" 
+                class="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            let userInput = document.getElementById("userInput").value.trim();
+            if (userInput === "") return;
+
+            // Append user's message
+            appendMessage("You", userInput, "bg-blue-100");
+
+            // Call API
+            let response = await fetch("http://localhost:8080/chat/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userInput)
+            });
+
+            let botResponse = await response.text();
+            appendMessage("Bot", botResponse, "bg-gray-200");
+
+            // Clear input
+            document.getElementById("userInput").value = "";
+        }
+
+        function appendMessage(sender, message, bgColor) {
+            let chatbox = document.getElementById("chatbox");
+            let messageDiv = document.createElement("div");
+            messageDiv.className = `p-2 rounded-lg ${bgColor} w-fit max-w-xs ${sender === "You" ? "self-end ml-auto" : "self-start"}`;
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatbox.appendChild(messageDiv);
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+        }
+    </script>
+
+</body>
+</html>
