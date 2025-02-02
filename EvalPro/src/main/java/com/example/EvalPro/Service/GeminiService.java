@@ -18,10 +18,20 @@ public class GeminiService {
 
     public String getGeminiResponse(String userMessage) {
         RestTemplate restTemplate = new RestTemplate();
+
+        // Check if the user query is about the bot's creator
+        if (isCreatorQuery(userMessage)) {
+            return "I am under the guidance of Insight Visioners.";
+        }
+
         String apiUrlWithKey = GEMINI_API_URL + "?key=" + API_KEY;
 
-        // Modify the userMessage to explicitly request education-related content
-        String educationPrompt = "Provide an education-related response to the following: " + userMessage;
+        // Determine whether a short or long answer is needed
+        String responseType = needsLongAnswer(userMessage) ? 
+                "Provide a **detailed** education-related response with steps, explanations, and examples." : 
+                "Provide a **concise** and **short** education-related response.";
+
+        String educationPrompt = responseType + " Question: " + userMessage;
 
         Map<String, Object> requestBody = Map.of(
                 "contents", Collections.singletonList(Map.of(
@@ -47,6 +57,26 @@ public class GeminiService {
         }
     }
 
+    private boolean isCreatorQuery(String userMessage) {
+        String lowerCaseMessage = userMessage.toLowerCase();
+        return lowerCaseMessage.contains("who developed you") ||
+               lowerCaseMessage.contains("who created you") ||
+               lowerCaseMessage.contains("who designed you") ||
+               lowerCaseMessage.contains("who made you") ||
+               lowerCaseMessage.contains("your creator") ||
+               lowerCaseMessage.contains("who built you");
+    }
+
+    // Determine if a long answer is needed based on keywords
+    private boolean needsLongAnswer(String userMessage) {
+        String lowerCaseMessage = userMessage.toLowerCase();
+        return lowerCaseMessage.contains("steps") ||
+               lowerCaseMessage.contains("procedure") ||
+               lowerCaseMessage.contains("process") ||
+               lowerCaseMessage.contains("how to") ||
+               lowerCaseMessage.contains("explain");
+    }
+
     private String formatResponse(String jsonResponse) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -55,18 +85,16 @@ public class GeminiService {
             JsonNode textNode = root.path("candidates").path(0).path("content").path("parts").path(0).path("text");
 
             if (textNode.isMissingNode()) {
-                return "No response from Gemini AI.";
+                return "No response from EduBot.";
             }
 
             // Get the response text
             String responseText = textNode.asText();
 
-            // Remove any markdown-style formatting (like **bold** or _italic_)
+            // Remove markdown-style formatting
             responseText = responseText.replaceAll("\\*\\*([^*]+)\\*\\*", "$1");  // Removing **bold**
             responseText = responseText.replaceAll("_([^_]+)_", "$1");  // Removing _italic_
-
-            // You can further remove asterisks or any other characters if needed
-            responseText = responseText.replaceAll("\\*", "");
+            responseText = responseText.replaceAll("\\*", "");  // Removing extra asterisks
 
             // Ensure the response is education-related
             responseText = filterEducationContent(responseText);
@@ -83,16 +111,14 @@ public class GeminiService {
     }
 
     private String filterEducationContent(String responseText) {
-        // Add logic to filter out non-education-related content
-        // For example, you can check for keywords related to education
         if (responseText.toLowerCase().contains("education") ||
-                responseText.toLowerCase().contains("learn") ||
-                responseText.toLowerCase().contains("teach") ||
-                responseText.toLowerCase().contains("school") ||
-                responseText.toLowerCase().contains("student") ||
-                responseText.toLowerCase().contains("result") ||
-                responseText.toLowerCase().contains("revaluation") ||
-                responseText.toLowerCase().contains("teacher")) {
+            responseText.toLowerCase().contains("learn") ||
+            responseText.toLowerCase().contains("teach") ||
+            responseText.toLowerCase().contains("school") ||
+            responseText.toLowerCase().contains("student") ||
+            responseText.toLowerCase().contains("result") ||
+            responseText.toLowerCase().contains("revaluation") ||
+            responseText.toLowerCase().contains("teacher")) {
             return responseText;
         } else {
             return "The response does not contain education-related content.";
@@ -102,7 +128,6 @@ public class GeminiService {
     private String appendRelevantLinks(String responseText) {
         StringBuilder finalResponse = new StringBuilder(responseText);
 
-        // Add relevant links based on the context of the response
         if (responseText.toLowerCase().contains("education")) {
             finalResponse.append("\n\nFor more information, visit: https://www.education.gov/");
         }
