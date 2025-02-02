@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluation Request-EvalPro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+</head>
+<body>
+<div class="bg-white shadow-lg p-4 rounded-lg">
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-bold flex items-center">
+      <img src="assessment.png" width="40px" class="mr-28"> Result Evaluation System
+    </h2>
+
+    <div class="flex items-center space-x-4">
+      <div id="clock" class="text-lg font-semibold">12:00 PM</div>
+      <span>Name:</span>
+      <img src="https://www.366icons.com/media/01/profile-avatar-account-icon-16699.png"
+           class="rounded-full w-10 h-10">
+
+    </div>
+  </div>
+</div>
+  <div class="w-64 bg-gray-800 text-white p-4">
+    <h2 class="text-xl font-bold mb-4">Sidebar</h2>
+    <div th:replace="sidebar.html ::adminfragment2"></div>
+  </div>
+
+
+<!-- table content -->
+<div style="padding: 100px; margin-left: auto; margin-right: 0; width: fit-content;">
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+      <thead class="text-xs uppercase bg-blue-200 text-gray-800">
+      <tr>
+        <th scope="col" class="p-4">
+          <div class="flex items-center">
+            <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded-sm focus:ring-blue-500 focus:ring-2">
+            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3">Student Name</th>
+        <th scope="col" class="px-6 py-3">Stream</th>
+        <th scope="col" class="px-6 py-3">Semester</th>
+        <th scope="col" class="px-6 py-3">Subject</th>
+        <th scope="col" class="px-6 py-3">Photocopy</th>
+        <th scope="col" class="px-6 py-3">Available</th>
+        <th scope="col" class="px-6 py-3">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="bg-blue-50 border-b border-blue-300 hover:bg-blue-100">
+        <td class="w-4 p-4">
+          <div class="flex items-center">
+            <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded-sm focus:ring-blue-500 focus:ring-2">
+            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+          </div>
+        </td>
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Apple MacBook Pro 17"</th>
+        <td class="px-6 py-4">Silver</td>
+        <td class="px-6 py-4">Silver</td>
+        <td class="px-6 py-4">Silver</td>
+        <td class="px-6 py-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="file" class="hidden" id="file-upload">
+            <span class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition">Upload</span>
+          </label>
+        </td>
+
+        <td class="px-6 py-4">$2999</td>
+        <td class="flex items-center px-6 py-4 space-x-4">
+          <!-- Edit Button -->
+          <a href="#" class="flex items-center text-blue-600 hover:underline">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 me-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L8.25 18.464 3 19.5l1.036-5.25L16.862 3.487z" />
+            </svg>
+            Edit
+          </a>
+          <!-- Remove Button -->
+          <a href="#" class="flex items-center text-red-600 hover:underline">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 me-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Remove
+          </a>
+          <!-- Save Button -->
+          <a href="#" class="flex items-center text-green-600 hover:underline">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 me-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Save
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center mt-4">
+    <nav class="inline-flex -space-x-px text-sm shadow-sm">
+      <a href="#" class="px-3 py-2 leading-tight text-gray-700 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100">Previous</a>
+      <a href="#" class="px-3 py-2 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100">1</a>
+      <a href="#" class="px-3 py-2 leading-tight text-gray-700 bg-white border border-gray-300 hover:bg-gray-100">2</a>
+      <a href="#" class="px-3 py-2 leading-tight text-gray-700 bg-white border border-gray-300 hover:bg-gray-100">3</a>
+      <a href="#" class="px-3 py-2 leading-tight text-gray-700 bg-white border border-gray-300 hover:bg-gray-100">Next</a>
+    </nav>
+  </div>
+</div>
+
+<section class="flex items-center justify-end min-h-screen bg-gray-100 pr-10">
+
+
+
+
+
+
+
+</section>
+</body>
+</html>

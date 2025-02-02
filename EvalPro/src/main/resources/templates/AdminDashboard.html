@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - EvalPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body id="page-top">
+<button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-blue-600 rounded-lg sm:hidden hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
+    <span class="sr-only">Open sidebar</span>
+    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+    </svg>
+</button>
+<div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 text-white p-4">
+        <h2 class="text-xl font-bold mb-4">Sidebar</h2>
+        <div th:replace="sidebar.html ::adminfragment2"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col p-6">
+        <!-- Header -->
+        <div class="header bg-blue-100 p-4 shadow-md">
+            <div class="rounded container">
+                <div class="flex justify-between bg-blue-100 p-4 items-center rounded-md">
+                    <h2 class="text-3xl font-bold text-black flex items-center">
+                        <img src="assessment.png" width="40px" class="mr-2"> Result Evaluation System
+                    </h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="clock flex text-white" id="clock">
+                            <!-- The time will be displayed here -->
+                        </div>
+                        <span class="text-black">Name:</span>
+                        <img src="https://www.366icons.com/media/01/profile-avatar-account-icon-16699.png" alt="User" class="rounded-full" width="50px">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 p-6">
+            <!-- Total Students -->
+            <div class="w-full md:w-70 p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center space-x-4">
+                <svg class="w-10 h-10 text-green-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a5 5 0 1 1-5 5 5 5 0 0 1 5-5Zm6 14H4a2 2 0 0 1-2-2 6 6 0 0 1 12 0 2 2 0 0 1-2 2Z"/>
+                </svg>
+                <div>
+                    <h5 class="text-lg font-semibold text-black">Total Students</h5>
+                    <p class="text-2xl font-bold text-green-600">1,250</p>
+                </div>
+            </div>
+
+            <!-- Revaluation Requests -->
+            <div class="w-full md:w-70 p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center space-x-2">
+                <svg class="w-10 h-10 text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 3v14h14V3H3Zm12 12H5V5h10v10ZM7 7h6v2H7V7Zm0 4h6v2H7v-2Z"/>
+                </svg>
+                <div>
+                    <h5 class="text-lg font-semibold text-black">Revaluation Requests</h5>
+                    <p class="text-2xl font-bold text-blue-600">340</p>
+                </div>
+            </div>
+
+            <!-- Pending Revaluation -->
+            <div class="w-full md:w-70 p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center space-x-4">
+                <svg class="w-10 h-10 text-yellow-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a8 8 0 1 1-8 8 8 8 0 0 1 8-8Zm1 11H9v-4h2v4Zm0-6H9V5h2v2Z"/>
+                </svg>
+                <div>
+                    <h5 class="text-lg font-semibold text-black">Pending Revaluation</h5>
+                    <p class="text-2xl font-bold text-yellow-500">120</p>
+                </div>
+            </div>
+
+            <!-- Completed Revaluation -->
+            <div class="w-full md:w-70 p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center space-x-4">
+                <svg class="w-10 h-10 text-green-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 10l3 3 6-6-1.5-1.5L10 10.5 8.5 9 7 10Zm-4 4h14v2H3v-2Z"/>
+                </svg>
+                <div>
+                    <h5 class="text-lg font-semibold text-black">Completed Revaluation</h5>
+                    <p class="text-2xl font-bold text-green-500">220</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Card Section -->
+        <div class="mt-6 flex justify-Right gap-6 flex-wrap">
+            <!-- White Background Card with Black Text -->
+            <div class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl hover:bg-gray-100">
+                <img class="object-cover w-full h-full md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/img/notice.jpg" alt="">
+                <div class="flex flex-col justify-between p-4 leading-normal text-black flex-1">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight">Important Notice</h5>
+                    <a href="#" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Redirect</a>
+                </div>
+            </div>
+
+            <!-- White Background Card with Black Text -->
+            <div class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl hover:bg-gray-100">
+                <img class="object-cover w-full h-full md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/img/request.jpg" alt="">
+                <div class="flex flex-col justify-between p-4 leading-normal text-black flex-1">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight">Evolutionary Request </h5>
+                    <a href="#" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Redirect</a>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl hover:bg-gray-100">
+                <img class="object-cover w-full h-full md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/img/paper_check.jpg" alt="">
+                <div class="flex flex-col justify-between p-4 leading-normal text-black flex-1">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight">Paper Checking</h5>
+                    <a href="#" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Redirect</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</a>
+
+
+
+<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/chart.min.js"></script>
+    <script src="/assets/js/bs-init.js"></script>
+    <script src="/assets/js/theme.js"></script>
+</body>
+
+</html>

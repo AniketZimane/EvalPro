@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Revaluation Information</title>
+  <script src="/js/ChatJs.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/CSS/ChatBot.css">
+  <!-- Font Awesome for Chatbot Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+<!-- Navbar -->
+<nav class="bg-blue-600 p-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <a href="#" class="text-white text-2xl font-bold">EvalPro</a>
+    <div class="hidden md:flex space-x-6">
+      <a href="#" class="text-white hover:text-gray-200">Home</a>
+      <a href="#" class="text-white hover:text-gray-200">About</a>
+      <a href="#" class="text-white hover:text-gray-200">Contact</a>
+      <a href="#" class="text-white hover:text-gray-200">Login/Signup</a>
+    </div>
+    <button class="md:hidden text-white focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mx-auto p-6">
+  <div class="bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-blue-600 mb-4">About University Examinations</h2>
+    <p class="text-gray-700 mb-4">
+      The university conducts examinations twice a year for all courses. Students are required to follow the guidelines provided by the examination department to ensure a smooth examination process.
+    </p>
+    <h3 class="text-xl font-bold text-blue-600 mb-2">Revaluation Process</h3>
+    <p class="text-gray-700 mb-4">
+      If a student is not satisfied with their examination results, they can apply for revaluation. The revaluation process involves a thorough rechecking of the answer sheets by the examination department. Please ensure you apply within the specified deadline.
+    </p>
+    <h3 class="text-xl font-bold text-blue-600 mb-2">How to Apply for Revaluation</h3>
+    <p class="text-gray-700 mb-4">
+      To apply for revaluation, follow these steps:
+    </p>
+    <ol class="list-decimal list-inside text-gray-700 mb-4">
+      <li>Visit the official university revaluation portal.</li>
+      <li>Log in using your student credentials.</li>
+      <li>Select the subject(s) you want to apply for revaluation.</li>
+      <li>Pay the revaluation fee online.</li>
+      <li>Submit the application and keep a copy for future reference.</li>
+    </ol>
+    <a href="/user/ResultDisplay/" target="_blank" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      Apply for Revaluation
+    </a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-blue-600 text-white text-center py-4 mt-8">
+  <p>&copy; 2025 EvalPro. All rights reserved.</p>
+</footer>
+
+<!-- Chatbot -->
+<div class="fixed bottom-6 right-6">
+  <button id="chat-button" class="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <i class="fas fa-comment-dots text-2xl"></i>
+  </button>
+</div>
+
+<div id="chat-window" class="fixed bottom-16 right-6 w-96 bg-white shadow-lg rounded-2xl hidden flex flex-col">
+  <div class="bg-blue-600 text-white text-center py-4 text-xl font-semibold flex items-center justify-center space-x-3">
+    <img src="/img/bot.gif" alt="EduBot" class="w-16 h-16 bg-blue-600 p-2 rounded-lg">
+    <span>EduBot</span>
+  </div>
+  <div id="chatbox" class="p-4 h-80 overflow-y-auto space-y-4"></div>
+  <div class="flex border-t p-4 bg-gray-50">
+    <input id="userInput" type="text" class="flex-grow p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Type your message...">
+    <button onclick="sendMessage()" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Send</button>
+  </div>
+</div>
+
+<script src="/js/ChatJs.js"></script>
+<script>
+    const mobileMenuButton = document.querySelector('button');
+    const chatButton = document.getElementById("chat-button");
+    const chatWindow = document.getElementById("chat-window");
+
+    mobileMenuButton.addEventListener('click', () => {
+      document.querySelector('.md\\:hidden.mt-2').classList.toggle('hidden');
+    });
+
+    chatButton.addEventListener("click", () => {
+      chatWindow.classList.toggle("hidden");
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvalPro-Pay Now</title>
+  <link rel="stylesheet" href="/css/Paynow.css">
+  <script src="/Js/Payment.js/"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+</head>
+<body>
+<div class="payment-container">
+  <!-- Header -->
+  <header>
+    <div class="logo">Revolution Payment</div>
+    <div class="page-title">Pay Now</div>
+  </header>
+
+  <!-- Order Summary -->
+  <section class="order-summary">
+    <h2>Student Details</h2>
+    <div class="summary-item">
+      <span>Student Name</span>
+      <span th:text="${name}">₹600.00</span>
+    </div>
+    <br>
+    <h2>Order Summary</h2>
+    <div class="summary-item">
+      <span>Revolution Fees</span>
+      <span>₹600.00</span>
+    </div>
+    <div class="summary-item">
+      <span>Platform Fees</span>
+      <span>₹5.00</span>
+    </div>
+    <div class="summary-item total">
+      <span>Total</span>
+      <span>₹605.00</span>
+    </div>
+  </section>
+
+  <button type="submit" class="pay-now-btn" onclick="paymentStrat()">Pay Now</button>
+  <!-- Footer -->
+  <footer>
+    <div class="security-info">
+      <img src="https://via.placeholder.com/50" alt="SSL Icon">
+      <p>Secure Payment</p>
+    </div>
+    <p class="terms">By proceeding, you agree to our <a target="_blank" href="/user/terms/">Terms & Conditions</a>.</p>
+  </footer>
+</div>
+</body>
+</html>

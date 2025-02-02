@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+  <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>EvalPro-Evaluation</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div th:replace="sidebar.html ::adminfragment2"></div>
+<!--<div th:replace="topbar.html ::adminfragment1"></div><br>-->
+<section class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Upload Answer Sheets</h2>
+
+    <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block font-medium text-gray-700">Student Answer Sheet:</label>
+        <input type="file" id="studentFile" name="studentFile" accept=".pdf"
+               class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block font-medium text-gray-700">Model Answer Paper:</label>
+        <input type="file" id="modelFile" name="modelAnswerFile" accept=".pdf"
+               class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <button type="button" onclick="uploadFiles()"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+        Submit
+      </button>
+    </form>
+
+    <div id="result" class="mt-4 text-gray-700 text-center"></div>
+  </div>
+</section>
+
+
+
+<script>
+        function uploadFiles() {
+            let formData = new FormData();
+            let studentFile = document.getElementById("studentFile").files[0];
+            let modelFile = document.getElementById("modelFile").files[0];
+
+            if (!studentFile || !modelFile) {
+                alert("Please select both files!");
+                return;
+            }
+
+            formData.append("studentFile", studentFile);
+            formData.append("modelAnswerFile", modelFile);
+
+            fetch("/api/compare", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerText = data;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+</body>
+</html>

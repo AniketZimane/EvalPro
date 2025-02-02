@@ -1,4 +1,4 @@
-# AI-Powered Answer Sheet Evaluation System
+# Enhanced The Result Revaluation System (AI-Powered Answer Sheet Evaluation System)
 
 ## 📌 Project Overview
 This project is an **AI-powered answer sheet evaluation system** that scans handwritten student answer sheets, compares them with a model answer paper, and assigns a similarity score. It integrates **Spring Boot (Java) backend**, **FastAPI (Python) AI model**, and a **TailwindCSS-based frontend**.

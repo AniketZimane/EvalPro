@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revaluation Application Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"/>
+
+
+
+</head>
+<body class="bg-gray-100">
+<script th:inline="javascript">
+       var msg=[[${msg}]]
+       var emsg=[[${emsg}]]
+       if(msg!=null)
+       {
+               swal("Good job!", msg, "success");
+        }
+        if(emsg!=null)
+        {
+               swal("Opps!", emsg, "info");
+
+        }
+
+
+</script>
+<!--<div th:replace="sidebar.html ::adminfragment2"></div>-->
+<div th:replace="topbar.html ::adminfragment1"></div>
+<div class="container mx-auto p-6 mt-16">
+  <div class="max-w-2xl mx-auto dark:bg-zinc-100 p-8 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold text-center mb-6">EvalPro-Revaluation Application Form</h1>
+    <form action="/user/submitRevaluation/" method="post">
+      <!-- Student Information -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-4">Student Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" id="name" name="fName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+          <div>
+            <label for="seatNumber" class="block text-sm font-medium text-gray-700">Seat Number</label>
+            <input type="text" id="seatNumber" name="seatNumber" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+            <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input type="tel" id="phone" name="phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course Details -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-4">Course Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="course" class="block text-sm font-medium text-gray-700">Course Name</label>
+            <input type="text" id="course" name="course" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+          <div>
+            <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+            <input type="text" id="semester" name="semester" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject List with Marks and Checkboxes -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-4">Select Subjects for Revaluation</h2>
+        <div class="space-y-3">
+          <!-- Example Subjects with Marks -->
+          <div th:each="entry : ${scores}" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+            <div class="flex items-center">
+              <input type="checkbox" th:id="'subject_' + ${entry.key}" name="subjects"
+                     th:value="${entry.key}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+              <label th:for="'subject_' + ${entry.key}" class="ml-2 text-sm text-gray-700" th:text="${entry.key}">Subject Name</label>
+            </div>
+            <span class="text-sm text-gray-600">Marks Obtained: <span th:text="${entry.value}"></span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reason for Revaluation -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-4">Reason for Revaluation</h2>
+        <div>
+          <label for="reason" class="block text-sm font-medium text-gray-700">Please specify the reason</label>
+          <textarea id="reason" name="reason" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end">
+        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Submit Application</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+            let seatNumber = "[[${seatNumber}]]";
+            let courseName = "[[${course}]]";
+            let semName = "[[${sem}]]";
+
+
+            $("#seatNumber").val(seatNumber);
+            $("#course").val(courseName);
+            $("#semester").val(semName);
+        });
+</script>
+</body>
+</html>

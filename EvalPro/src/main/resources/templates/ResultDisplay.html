@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Result Display System</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+<div th:replace="topbar.html ::adminfragment1"></div>
+<div class="max-w-4xl mx-auto bg-white p-6 mt-16 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold text-gray-800 border-b-2 border-blue-500 pb-2">Online Result Display System</h1>
+
+    <div class="mt-4">
+        <select class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            <option>Select Session --</option>
+            <option>Search --</option>
+        </select>
+    </div>
+
+    <div class="mt-6">
+        <div class="bg-green-600 text-white p-3 font-bold rounded-t-lg">
+            University Upcoming Result
+        </div>
+        <div class="p-3 border-b">
+            <div>Second Year Computer Engineering (2019 Pattern) Oct-2024</div>
+            <div class="text-red-500">09 February 2025</div>
+            <div class="text-blue-600 font-bold cursor-pointer hover:underline" onclick="openModal()">View Result</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="resultModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white w-96 p-6 rounded-lg shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h5 class="text-xl font-bold">Enter Details to View Result</h5>
+            <button class="text-gray-500 hover:text-gray-700" onclick="closeModal()">&times;</button>
+        </div>
+
+        <div id="errorMessage" class="text-red-500 hidden">Result Not Found. Please try again.</div>
+
+        <form id="resultForm" method="post" action="/user/get/student/result/">
+            <div class="mb-4">
+                <label for="seatNumber" class="block font-semibold">Seat Number</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" name="seatNumber" id="seatNumber" required>
+            </div>
+            <div class="mb-4">
+                <label for="motherName" class="block font-semibold">Mother's Name</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" name="motherName" id="motherName" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">View Result</button>
+        </form>
+    </div>
+</div>
+
+<!-- JS for Modal -->
+<script>
+    function openModal() {
+        document.getElementById("resultModal").classList.remove("hidden");
+    }
+    function closeModal() {
+        document.getElementById("resultModal").classList.add("hidden");
+    }
+</script>
+
+</body>
+</html>

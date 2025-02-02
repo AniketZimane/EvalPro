@@ -23,6 +23,15 @@ public class GeminiService {
         if (isCreatorQuery(userMessage)) {
             return "I am under the guidance of Insight Visioners.";
         }
+        if (isCreatorQuery1(userMessage)) {
+            return "To apply for revaluation:\n\n" +
+                    "1️⃣ Visit the official student portal www.evalpro.com/.\n" +
+                    "2️⃣ Navigate to the 'Revaluation Section'.\n" +
+                    "3️⃣ Select the subject(s) for revaluation.\n" +
+                    "4️⃣ Pay the applicable fee online.\n" +
+                    "5️⃣ Submit your application before the deadline.\n\n" +
+                    "📌 For further details, you can use EvalPro chat Bot or contact the Examination Department.";
+        }
 
         String apiUrlWithKey = GEMINI_API_URL + "?key=" + API_KEY;
 
@@ -62,9 +71,18 @@ public class GeminiService {
         return lowerCaseMessage.contains("who developed you") ||
                lowerCaseMessage.contains("who created you") ||
                lowerCaseMessage.contains("who designed you") ||
+               lowerCaseMessage.contains("how can i apply for revaluation") ||
                lowerCaseMessage.contains("who made you") ||
                lowerCaseMessage.contains("your creator") ||
                lowerCaseMessage.contains("who built you");
+    }
+
+    private boolean isCreatorQuery1(String userMessage) {
+        String lowerCaseMessage = userMessage.toLowerCase();
+        return lowerCaseMessage.contains("how to apply for revaluation") ||
+                lowerCaseMessage.contains("process to apply for revaluation") ||
+                lowerCaseMessage.contains("how can i apply for revaluation");
+
     }
 
     // Determine if a long answer is needed based on keywords
@@ -74,7 +92,10 @@ public class GeminiService {
                lowerCaseMessage.contains("procedure") ||
                lowerCaseMessage.contains("process") ||
                lowerCaseMessage.contains("how to") ||
-               lowerCaseMessage.contains("explain");
+               lowerCaseMessage.contains("explain")||
+               lowerCaseMessage.contains("I want")||
+               lowerCaseMessage.contains("hi");
+
     }
 
     private String formatResponse(String jsonResponse) {
@@ -85,7 +106,7 @@ public class GeminiService {
             JsonNode textNode = root.path("candidates").path(0).path("content").path("parts").path(0).path("text");
 
             if (textNode.isMissingNode()) {
-                return "No response from EduBot.";
+                return "No response from EduBOt.";
             }
 
             // Get the response text
@@ -103,7 +124,7 @@ public class GeminiService {
             responseText = appendRelevantLinks(responseText);
 
             // Convert text response into a user-friendly format
-            return responseText.replace("\n", "\n\n");  // Ensure proper line breaks
+            return responseText.replace("\n", "\n\n");  //  line breaker
 
         } catch (Exception e) {
             return "Error parsing AI response.";
@@ -117,7 +138,12 @@ public class GeminiService {
             responseText.toLowerCase().contains("school") ||
             responseText.toLowerCase().contains("student") ||
             responseText.toLowerCase().contains("result") ||
+            responseText.toLowerCase().contains("marking") ||
+            responseText.toLowerCase().contains("system") ||
+            responseText.toLowerCase().contains("programming") ||
             responseText.toLowerCase().contains("revaluation") ||
+            responseText.toLowerCase().contains("rechecking") ||
+            responseText.toLowerCase().contains("photocopy") ||
             responseText.toLowerCase().contains("teacher")) {
             return responseText;
         } else {
@@ -129,19 +155,19 @@ public class GeminiService {
         StringBuilder finalResponse = new StringBuilder(responseText);
 
         if (responseText.toLowerCase().contains("education")) {
-            finalResponse.append("\n\nFor more information, visit: https://www.education.gov/");
+            finalResponse.append("\n\nFor more information, visit: https://www.evalpro.com/");
         }
         if (responseText.toLowerCase().contains("learn")) {
-            finalResponse.append("\n\nCheck out online learning resources: https://www.khanacademy.org/");
+            finalResponse.append("\n\nCheck out online learning resources: https://www.evalpro.com/");
         }
         if (responseText.toLowerCase().contains("school")) {
-            finalResponse.append("\n\nFind school-related resources: https://www.schools.com/");
+            finalResponse.append("\n\nFind school-related resources: https://www.evalpro.com/");
         }
         if (responseText.toLowerCase().contains("student")) {
-            finalResponse.append("\n\nStudent resources: https://www.students.com/");
+            finalResponse.append("\n\nStudent resources: https://www.evalpro.com/");
         }
         if (responseText.toLowerCase().contains("teacher")) {
-            finalResponse.append("\n\nTeacher resources: https://www.teachers.com/");
+            finalResponse.append("\n\nTeacher resources: https://www.evalpro.com/");
         }
 
         return finalResponse.toString();
