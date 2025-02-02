@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ClientController {
+
     @GetMapping("/")
-    public String getHome()
-    {
-        return "Chatbot";
+    public String getHomePage() {
+        return "Chatbot";  // Renders "Chatbot.html" from templates folder
     }
 }
