@@ -1,6 +1,7 @@
 package com.example.EvalPro.Controller;
 
 
+import com.example.EvalPro.Service.SynonymChecker;
 import net.sourceforge.tess4j.*;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.rendering.*;
@@ -12,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -35,12 +37,12 @@ public class HandwritingController {
 
             // Compare and Calculate Marks
             double similarityScore = calculateSimilarity(studentText, modelText);
-            int marks = (int) (similarityScore * 10 / 100); // Assuming marks out of 10
+            int marks = (int) (similarityScore * 70 / 100); // Assuming marks out of 10
 
             return "Extracted Student Answer:\n" + studentText +
                     "\n\nExtracted Model Answer:\n" + modelText +
                     "\n\nSimilarity Score: " + similarityScore + "%" +
-                    "\nMarks: " + marks + "/10";
+                    "\nMarks: " + marks + "/70";
         } catch (Exception e) {
             return "Error processing files: " + e.getMessage();
         }
@@ -75,9 +77,24 @@ public class HandwritingController {
     }
 
     private double calculateSimilarity(String studentText, String modelText) {
-        int distance = levenshteinDistance(studentText, modelText);
-        int maxLength = Math.max(studentText.length(), modelText.length());
-        return (1.0 - ((double) distance / maxLength)) * 100;
+        String[] studentWords = studentText.split("\\s+");
+        String[] modelWords = modelText.split("\\s+");
+
+        int matchedWords = 0;
+        int totalWords = Math.max(studentWords.length, modelWords.length);
+
+        for (int i = 0; i < studentWords.length && i < modelWords.length; i++) {
+            if (studentWords[i].equalsIgnoreCase(modelWords[i])) {
+                matchedWords++;
+            } else {
+                List<String> synonyms = SynonymChecker.getSynonyms(modelWords[i]);
+                if (synonyms.contains(studentWords[i].toLowerCase())) {
+                    matchedWords++;
+                }
+            }
+        }
+
+        return ((double) matchedWords / totalWords) * 100;
     }
 
     private int levenshteinDistance(String str1, String str2) {

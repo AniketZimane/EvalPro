@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvalPro-Result</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-4 font-sans">
+<!-- Main Container -->
+<div class="max-w-4xl mx-auto bg-white border border-gray-300 rounded-md p-6 shadow-sm">
+  <!-- University Header -->
+  <div class="text-center mb-6">
+    <h1 class="font-bold text-xl uppercase tracking-wide">SAVITRIBAL PHULE PUNE UNIVERSITY</h1>
+    <p class="text-sm text-gray-600">(formerly University of Pune)</p>
+    <p class="text-sm text-gray-600">GANESHKHIND, PUNE 411007</p>
+  </div>
+
+  <!-- Student Details -->
+  <div class="grid grid-cols-2 gap-4 text-sm mb-6">
+    <div class="space-y-2">
+      <p>Branch/Course: <span class="font-semibold" th:text="${Stream}+ ' ' + ${pattern}">SECOND YEAR S.E.(2019 Credit Pattern) October-2024</span></p>
+      <div class="flex justify-between">
+        <span th:text="'Seat Number:' + ${studentId}">Seat No:</span>
+        <span>Center:</span>
+      </div>
+      <p>Perm Reg No(PRN):</p>
+    </div>
+    <div class="space-y-2">
+      <p th:text="'Student Name:'"></p>
+      <p th:text="'Mother Name:' + ${motherName}"></p>
+      <p></p>
+      <p>College Name:</p>
+    </div>
+  </div>
+
+  <!-- Subjects Table -->
+  <table class="w-full text-sm mb-6">
+    <thead class="bg-gray-100">
+    <tr>
+      <th class="p-2 border">Sem</th>
+<!--      <th class="p-2 border">SubCode</th>-->
+      <th class="p-2 border">Subject Name</th>
+      <th class="p-2 border">Score</th>
+      <th class="p-2 border">Grade</th>
+      <th class="p-2 border">Credit</th>
+<!--      <th class="p-2 border">GP</th>-->
+<!--      <th class="p-2 border">Prt</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Add your rows here following this pattern -->
+    <tr th:each="entry : ${scores}">
+      <td class="p-2 border text-center" th:text="${sem}">3</td>
+<!--      <td class="p-2 border" >210241</td>-->
+      <td class="p-2 border" th:text="${entry.key}">DISCRETE MATHEMATICS</td>
+      <td class="p-2 border text-center" th:text="${entry.value}">3</td>
+      <!-- Grade Logic (Convert value to Double) -->
+      <td class="p-2 border text-center">
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) == 100}" th:text="'A+'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 90 and T(java.lang.Double).parseDouble(entry.value) < 100}" th:text="'A'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 80 and T(java.lang.Double).parseDouble(entry.value) < 90}" th:text="'B+'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 70 and T(java.lang.Double).parseDouble(entry.value) < 80}" th:text="'B'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 60 and T(java.lang.Double).parseDouble(entry.value) < 70}" th:text="'C+'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 50 and T(java.lang.Double).parseDouble(entry.value) < 60}" th:text="'C'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) >= 40 and T(java.lang.Double).parseDouble(entry.value) < 50}" th:text="'D'"></span>
+        <span th:if="${T(java.lang.Double).parseDouble(entry.value) < 40}" th:text="'F'"></span>
+      </td>
+
+
+      <td class="p-2 border text-center">9</td>
+<!--      <td class="p-2 border text-center">27</td>-->
+<!--      <td class="p-2 border"></td>-->
+    </tr>
+    <!-- Add other rows similarly -->
+    </tbody>
+  </table>
+
+  <!-- Result Summary -->
+  <div class="text-sm mb-6">
+    <p class="font-semibold">Third Semester SGPA: 8.68 Credits Earned/Total:22/22 Total Credit Points:191</p>
+  </div>
+
+  <!-- Footer Notes -->
+  <div class="text-xs text-gray-600 text-center">
+    <p th:text="'RESULT DATE '+${currDate}">RESULT DATE:31 January 2025</p>
+    <p class="italic mt-2">The results published online are for immediate information only...</p>
+    <p class="mt-4">1 of 1</p>
+    <p class="mt-2">Savitribal Phule Pune University, Online Result</p>
+    <p th:text="'RESULT DATE '+${currDate}">Download Date:01/02/2025</p>
+    <a th:href="@{/user/revolution/{studentId}(studentId=${studentId})}">Apply for Revaluation</a>
+  </div>
+</div>
+</body>
+</html>
