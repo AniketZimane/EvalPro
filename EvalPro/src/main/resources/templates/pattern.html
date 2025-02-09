@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Year</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 40px;
+            
+        }
+        .gradient-header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            border-radius: 20px 20px 0 0;
+           
+        }
+        .input-group-custom label {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .input-group-custom input {
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .input-group-custom input:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.2);
+        }
+        .subject-table th {
+            background: #3498db !important;
+            color: white;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="main-card">
+            <div class="gradient-header p-4">
+                <h2 class="mb-0"> Pattern</h2>
+            </div>
+
+            <div class="p-4">
+                <form id="yearForm" class="row g-3 mb-4">
+                    <div class="col-md-4 input-group-custom">
+                        <label for="academicYear" class="form-label">Enter new pattern</label>
+                        <input type="text" class="form-control" id="academicYear" placeholder="Enter Patterrn" pattern="\d{4}-\d{4}" required>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">➕ Add</button>
+                    </div>
+                </form>
+
+                <div class="subject-table">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th> Pattern</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsBody"></tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <nav>
+                    <ul class="pagination" id="pagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
