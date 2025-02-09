@@ -10,4 +10,8 @@ public class ClientController {
     public String getHomePage() {
         return "Chatbot";  // Renders "Chatbot.html" from templates folder
     }
+    @GetMapping("/dashboard/")
+    public String getDashboardPage() {
+        return "index";  // Renders "index.html" from templates folder
+    }
 }

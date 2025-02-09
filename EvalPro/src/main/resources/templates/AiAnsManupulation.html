@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Handwriting Evaluation</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+  <h2 class="text-xl font-semibold mb-4">Upload Answer Sheets</h2>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label class="block mb-2 text-sm font-medium text-gray-700">Student Answer Sheet:</label>
+    <input type="file" id="studentFile" name="studentFile" accept=".pdf"
+           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
+
+    <label class="block mt-4 mb-2 text-sm font-medium text-gray-700">Model Answer Paper:</label>
+    <input type="file" id="modelFile" name="modelAnswerFile" accept=".pdf"
+           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
+
+    <button type="button" onclick="uploadFiles()"
+            class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+      Submit
+    </button>
+  </form>
+
+  <div id="result" class="mt-4 text-gray-700"></div>
+</div>
+
+<script>
+        function uploadFiles() {
+            let formData = new FormData();
+            let studentFile = document.getElementById("studentFile").files[0];
+            let modelFile = document.getElementById("modelFile").files[0];
+
+            if (!studentFile || !modelFile) {
+                alert("Please select both files!");
+                return;
+            }
+
+            formData.append("studentFile", studentFile);
+            formData.append("modelAnswerFile", modelFile);
+
+            fetch("/api/compare", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerText = data;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+</body>
+</html>

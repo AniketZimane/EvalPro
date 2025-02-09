@@ -74,7 +74,10 @@ public class GeminiService {
                lowerCaseMessage.contains("procedure") ||
                lowerCaseMessage.contains("process") ||
                lowerCaseMessage.contains("how to") ||
-               lowerCaseMessage.contains("explain");
+               lowerCaseMessage.contains("explain")||
+               lowerCaseMessage.contains("I want")||
+               lowerCaseMessage.contains("hi");
+
     }
 
     private String formatResponse(String jsonResponse) {
@@ -85,7 +88,7 @@ public class GeminiService {
             JsonNode textNode = root.path("candidates").path(0).path("content").path("parts").path(0).path("text");
 
             if (textNode.isMissingNode()) {
-                return "No response from EduBot.";
+                return "No response from EduBOt.";
             }
 
             // Get the response text
@@ -103,7 +106,7 @@ public class GeminiService {
             responseText = appendRelevantLinks(responseText);
 
             // Convert text response into a user-friendly format
-            return responseText.replace("\n", "\n\n");  // Ensure proper line breaks
+            return responseText.replace("\n", "\n\n");  //  line breaker
 
         } catch (Exception e) {
             return "Error parsing AI response.";
@@ -117,6 +120,9 @@ public class GeminiService {
             responseText.toLowerCase().contains("school") ||
             responseText.toLowerCase().contains("student") ||
             responseText.toLowerCase().contains("result") ||
+            responseText.toLowerCase().contains("marking") ||
+            responseText.toLowerCase().contains("system") ||
+            responseText.toLowerCase().contains("programming") ||
             responseText.toLowerCase().contains("revaluation") ||
             responseText.toLowerCase().contains("teacher")) {
             return responseText;
