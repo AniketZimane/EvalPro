@@ -12,8 +12,8 @@ public class RevaluationRequest {
     String seatNumber;
     String email;
     String phone;
+    String course;
     String semester;
-    String subject;
     @Column(length = 1000) // Increase size to store multiple subjects
     private String subjects; // Store as comma-separated values (CSV) or JSON
     String reason;
@@ -25,27 +25,17 @@ public class RevaluationRequest {
     String moderaterId;
     String remark;
 
-
-    public RevaluationRequest(Long id, String fName, String seatNumber, String email, String phone, String semester, String subject, String subjects, String reason) {
-        this.id = id;
-        this.fName = fName;
-        this.seatNumber = seatNumber;
-        this.email = email;
-        this.phone = phone;
-        this.semester = semester;
-        this.subject = subject;
-        this.subjects = subjects;
-        this.reason = reason;
+    public RevaluationRequest() {
     }
 
-    public RevaluationRequest(Long id, String fName, String seatNumber, String email, String phone, String semester, String subject, String subjects, String reason, String isPayment, String isVerify, String isEvaluate, String evaluaterId, String isModerate, String moderaterId, String remark) {
+    public RevaluationRequest(Long id, String fName, String seatNumber, String email, String phone, String course, String semester, String subjects, String reason, String isPayment, String isVerify, String isEvaluate, String evaluaterId, String isModerate, String moderaterId, String remark) {
         this.id = id;
         this.fName = fName;
         this.seatNumber = seatNumber;
         this.email = email;
         this.phone = phone;
+        this.course = course;
         this.semester = semester;
-        this.subject = subject;
         this.subjects = subjects;
         this.reason = reason;
         this.isPayment = isPayment;
@@ -55,9 +45,6 @@ public class RevaluationRequest {
         this.isModerate = isModerate;
         this.moderaterId = moderaterId;
         this.remark = remark;
-    }
-
-    public RevaluationRequest() {
     }
 
     public Long getId() {
@@ -100,20 +87,20 @@ public class RevaluationRequest {
         this.phone = phone;
     }
 
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
     public String getSemester() {
         return semester;
     }
 
     public void setSemester(String semester) {
         this.semester = semester;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getSubjects() {
@@ -196,8 +183,8 @@ public class RevaluationRequest {
                 ", seatNumber='" + seatNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", course='" + course + '\'' +
                 ", semester='" + semester + '\'' +
-                ", subject='" + subject + '\'' +
                 ", subjects='" + subjects + '\'' +
                 ", reason='" + reason + '\'' +
                 ", isPayment='" + isPayment + '\'' +

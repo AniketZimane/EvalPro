@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jwnl_properties>
+    <dictionary>
+        <param name="dictionary_element_factory" value="net.sf.extjwnl.dictionary.file.DictionaryElementFactory"/>
+        <param name="dictionary_path" value="src/main/resources/dict"/>
+        <param name="morphological_processor" value="net.sf.extjwnl.dictionary.morph.DefaultMorphologicalProcessor"/>
+    </dictionary>
+</jwnl_properties>

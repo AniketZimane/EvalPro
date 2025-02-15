@@ -166,6 +166,7 @@ public class ClientController {
             @RequestParam("email") String email,
             @RequestParam("phone") String phone,
             @RequestParam("semester") String semester,
+            @RequestParam("course") String course,
             @RequestParam(value = "subjects", required = false) List<String> subjects,
             @RequestParam("reason") String reason,
             Model model) {
@@ -179,9 +180,11 @@ public class ClientController {
         request.setSeatNumber(seatNumber);
         request.setEmail(email);
         request.setPhone(phone);
+        request.setCourse(course);
         request.setSemester(semester);
         request.setSubjects(subjectsString); // Save as CSV String
         request.setReason(reason);
+        request.setIsPayment("Y");
 
         try {
             revaluationRequestRepo.save(request);
@@ -255,6 +258,117 @@ public class ClientController {
         return "termandcondition";
     }
 
+    @GetMapping("/rechecking/apply")
+    public String getApplyForRechecking(@RequestParam("seatNumber") String seatNumber, Model model) {
+        List<RevaluationRequest> revaluationRequests = revaluationRequestRepo.findRevaluationRequestsBySeatNumber(seatNumber);
 
+        List<String> subjects = new ArrayList<>();
+        String studentId = "";
+
+        for (RevaluationRequest data : revaluationRequests) {
+            studentId = data.getSeatNumber();
+            subjects.addAll(Arrays.asList(data.getSubjects().split(",")));
+        }
+
+        model.addAttribute("subjects", subjects);
+        model.addAttribute("studentId", studentId);
+
+        return "recheckingApply";
+    }
+
+    @PostMapping("/recheckingRequest")
+    public String submitRecheckingRequest(
+            @RequestParam("studentId") String studentId,
+            @RequestParam("subjects") List<String> subjects,
+            Model model) {
+
+        String studentEmail = "";
+        String studentName = "";
+        String studentCourse = "";
+
+        // Loop through selected subjects and save each request
+        for (String subject : subjects) {
+            RevaluationRequest request = new RevaluationRequest();
+            List<RevaluationRequest> revaluationRequests = revaluationRequestRepo.findRevaluationRequestsBySeatNumber(studentId);
+
+            for (RevaluationRequest data : revaluationRequests) {
+                request.setId(data.getId());
+                request.setfName(data.getfName());
+                request.setSeatNumber(data.getSeatNumber());
+                request.setCourse(data.getCourse());
+                request.setPhone(data.getPhone());
+                request.setEmail(data.getEmail());
+                request.setSubjects(data.getSubjects());
+                request.setSemester(data.getSemester());
+                request.setIsPayment("Y");
+
+                // Capture email details
+                studentEmail = data.getEmail();
+                studentName = data.getfName();
+                studentCourse = data.getCourse();
+            }
+
+            request.setRemark("This " + subject + " is for rechecking");
+            request.setIsEvaluate("no");
+            revaluationRequestRepo.save(request);
+        }
+
+        // Send email notification
+        if (!studentEmail.isEmpty()) {
+            sendRecheckingConfirmationEmail(studentEmail, studentName, studentId, studentCourse, subjects);
+            System.out.println("Email send");
+        }
+
+        // Add confirmation message
+        model.addAttribute("message", "Rechecking request submitted successfully!");
+
+        return "recheckingApply";
+    }
+
+    private void sendRecheckingConfirmationEmail(String toEmail, String studentName, String studentId, String studentCourse, List<String> subjects) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(toEmail);
+            helper.setSubject("Rechecking Request Submitted");
+            helper.setText(buildEmailContent(studentName, studentId, studentCourse, subjects), true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String buildEmailContent(String studentName, String studentId, String studentCourse, List<String> subjects) {
+        StringBuilder subjectsList = new StringBuilder();
+        for (String subject : subjects) {
+            subjectsList.append("<li>").append(subject).append("</li>");
+        }
+
+        return "<!DOCTYPE html>" +
+                "<html><head><style>" +
+                "body { font-family: Arial, sans-serif; line-height: 1.6; }" +
+                ".container { width: 90%; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }" +
+                "h2 { color: #2d89ef; }" +
+                "p { font-size: 16px; }" +
+                ".footer { font-size: 14px; color: #666; margin-top: 20px; }" +
+                "</style></head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<h2>Rechecking Request Confirmation</h2>" +
+                "<p>Hello <strong>" + studentName + "</strong>,</p>" +
+                "<p>Your rechecking request has been submitted successfully.</p>" +
+                "<p><strong>Student ID:</strong> " + studentId + "</p>" +
+                "<p><strong>Course:</strong> " + studentCourse + "</p>" +
+                "<p><strong>Subjects Requested for Rechecking:</strong></p>" +
+                "<ul>" + subjectsList + "</ul>" +
+                "<p>We will notify you once the evaluation is completed.</p>" +
+                "<p>Thank you,</p>" +
+                "<p><strong>EvalPro</strong></p>" +
+                "<div class='footer'>This is an automated message. Please do not reply.</div>" +
+                "</div>" +
+                "</body></html>";
+    }
 
 }

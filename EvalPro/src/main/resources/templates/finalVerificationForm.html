@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EvalPro</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>  <!-- Tailwind CSS CDN -->
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<form id="updateForm" method="post" action="/admin/update/status/data/" class="w-full max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md space-y-4 mt-10 mb-10">
+    <h2 class="text-lg font-semibold text-gray-700 text-center">Update Revaluation Details</h2>
+
+    <!-- Student ID -->
+    <div>
+        <label for="studentId" class="block text-sm font-medium text-gray-700">Student ID</label>
+        <input type="text" id="studentId" name="studentId" th:value="${seatNumber}" required
+               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Name -->
+    <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="name" name="name" th:value="${name}" required
+               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Email -->
+    <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email" th:value="${email}" required
+               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Is Evaluate -->
+    <div>
+        <label for="isEvaluate" class="block text-sm font-medium text-gray-700">Is Evaluate</label>
+        <select id="isEvaluate" name="isEvaluate"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled>Select an option</option>
+            <option value="yes" th:selected="${isEvaluate == 'yes'}">Yes</option>
+            <option value="no" th:selected="${isEvaluate == 'no'}">No</option>
+        </select>
+    </div>
+
+    <!-- Is Moderate -->
+    <div>
+        <label for="isModerate" class="block text-sm font-medium text-gray-700">Is Moderate</label>
+        <select id="isModerate" name="isModerate"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled>Select an option</option>
+            <option value="yes" th:selected="${isModerate == 'yes'}">Yes</option>
+            <option value="no" th:selected="${isModerate == 'no'}">No</option>
+        </select>
+    </div>
+
+    <!-- Is Verify -->
+    <div>
+        <label for="isVerify" class="block text-sm font-medium text-gray-700">Is Verify</label>
+        <select id="isVerify" name="isVerify"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled>Select an option</option>
+            <option value="yes" th:selected="${isVerify == 'yes'}">Yes</option>
+            <option value="no" th:selected="${isVerify == 'no'}">No</option>
+        </select>
+    </div>
+
+    <!-- Is Marks Updated? (Radio Button) -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Is Marks Updated?</label>
+        <div class="mt-1 flex space-x-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="marksUpdated" value="yes" id="marksUpdatedYes" class="form-radio">
+                <span class="ml-2">Yes</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" name="marksUpdated" value="no" id="marksUpdatedNo" class="form-radio" checked>
+                <span class="ml-2">No</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Marks Input (Initially Disabled) -->
+    <div>
+        <label for="marks" class="block text-sm font-medium text-gray-700">Marks</label>
+        <input type="number" id="marks" name="marks" disabled
+               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Remark (Initially "Not Updated") -->
+    <div>
+        <label for="remark" class="block text-sm font-medium text-gray-700">Remark</label>
+        <textarea id="remark" name="remark" rows="3"
+                  class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">Not Updated</textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Update Marks
+        </button>
+    </div>
+</form>
+
+<!-- JavaScript to Handle Enable/Disable Logic -->
+<script>
+    $(document).ready(function () {
+        $('input[name="marksUpdated"]').change(function () {
+            if ($('#marksUpdatedYes').is(':checked')) {
+                $('#marks').prop('disabled', false);
+                $('#remark').val(''); // Clear remark
+            } else {
+                $('#marks').prop('disabled', true);
+                $('#remark').val('Not Updated'); // Set remark to 'Not Updated'
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

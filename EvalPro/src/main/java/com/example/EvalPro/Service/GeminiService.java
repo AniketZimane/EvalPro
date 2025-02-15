@@ -71,7 +71,6 @@ public class GeminiService {
         return lowerCaseMessage.contains("who developed you") ||
                lowerCaseMessage.contains("who created you") ||
                lowerCaseMessage.contains("who designed you") ||
-               lowerCaseMessage.contains("how can i apply for revaluation") ||
                lowerCaseMessage.contains("who made you") ||
                lowerCaseMessage.contains("your creator") ||
                lowerCaseMessage.contains("who built you");

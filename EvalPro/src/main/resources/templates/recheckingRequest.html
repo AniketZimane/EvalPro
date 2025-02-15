@@ -4,54 +4,9 @@
     <meta charset="UTF-8">
     <title>Evaluation Request-EvalPro</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".file-upload").forEach(input => {
-    input.addEventListener("change", function () {
-      let studentId = this.dataset.seatnumber;
-      let subject = this.dataset.subject;
-      let fileListDiv = this.closest("div").querySelector(".file-list");
-
-      fileListDiv.innerHTML = ""; // Clear previous selection
-      Array.from(this.files).forEach(file => {
-        let fileItem = document.createElement("p");
-        fileItem.textContent = `${subject}: ${file.name}`;
-        fileListDiv.appendChild(fileItem);
-      });
-    });
-  });
-
-  document.querySelectorAll(".save-button").forEach(button => {
-    button.addEventListener("click", function () {
-      let studentId = this.dataset.seatnumber;
-      let formData = new FormData();
-
-      document.querySelectorAll(`input[data-seatnumber='${studentId}']`).forEach(input => {
-        let subject = input.dataset.subject;
-        Array.from(input.files).forEach(file => {
-          formData.append("files", file, `${studentId}_${subject}_${file.name}`);
-        });
-      });
-
-      if (formData.getAll("files").length === 0) {
-        alert("Please select at least one file before saving.");
-        return;
-      }
-
-      fetch(`/files/upload/${studentId}`, {
-        method: "POST",
-        body: formData
-      })
-      .then(response => response.text())
-      .then(result => alert(result))
-      .catch(error => console.error("Error:", error));
-    });
-  });
-});
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-
-  </script>
 
 </head>
 <body>
@@ -89,17 +44,18 @@
           </div>
         </th>
         <th scope="col" class="px-6 py-3">Student Name</th>
-        <th scope="col" class="px-6 py-3">Stream</th>
-        <th scope="col" class="px-6 py-3">Semester</th>
+        <th scope="col" class="px-6 py-3">Student Id</th>
         <th scope="col" class="px-6 py-3">Subject</th>
-        <th scope="col" class="px-6 py-3">Photocopy</th>
+        <th scope="col" class="px-6 py-3">Is evaluate</th>
+        <th scope="col" class="px-6 py-3">Is isModerate</th>
+        <th scope="col" class="px-6 py-3">Is isVerify</th>
 <!--        <th scope="col" class="px-6 py-3">Is Evaluate</th>-->
 <!--        <th scope="col" class="px-6 py-3">Is Moderate</th>-->
         <th scope="col" class="px-6 py-3">Action</th>
       </tr>
       </thead>
       <tbody>
-      <tr class="bg-blue-50 border-b border-blue-300 hover:bg-blue-100" th:each="data :${evaluationList}">
+      <tr class="bg-blue-50 border-b border-blue-300 hover:bg-blue-100" th:each="data :${revaluationRequests}">
         <td class="w-4 p-4">
           <div class="flex items-center">
             <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded-sm focus:ring-blue-500 focus:ring-2">
@@ -107,28 +63,17 @@
           </div>
         </td>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap" th:text="${data.fName}">Apple MacBook Pro 17"</th>
-        <td class="px-6 py-4" th:text="${data.course}">Silver</td>
-        <td class="px-6 py-4" th:text="${data.semester}">Silver</td>
-        <td class="px-6 py-4">
-          <ul>
-            <li th:each="subject : ${#strings.arraySplit(data.subjects, ',')}">
-              <span th:text="${subject}"></span>
-            </li>
-          </ul>
-        </td>
-        <td class="px-6 py-4">
-          <div th:each="subject : ${#strings.arraySplit(data.subjects, ',')}">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="file" class="hidden file-upload" multiple th:data-seatnumber="${data.seatNumber}" th:data-subject="${subject.trim()}">
-              <span class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition" th:text="'Upload for ' + ${subject}"></span>
-            </label>
-            <div class="file-list text-xs mt-2 text-gray-600"></div>
-          </div>
-        </td>
+        <td class="px-6 py-4" th:text="${data.seatNumber}">Silver</td>
+        <td class="px-6 py-4" th:text="${data.subjects}">Silver</td>
+        <td class="px-6 py-4" th:text="${data.isEvaluate}">Silver</td>
+        <td class="px-6 py-4" th:text="${data.isModerate}">Silver</td>
+        <td class="px-6 py-4" th:text="${data.isVerify}">Silver</td>
+
+
 
         <td class="flex items-center px-6 py-4 space-x-4">
           <!-- Edit Button -->
-          <a href="#" class="flex items-center text-blue-600 hover:underline">
+          <a th:href="@{/admin/status/update/{id}/(id = ${data.id})}" class="flex items-center text-blue-600 hover:underline">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 me-1">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L8.25 18.464 3 19.5l1.036-5.25L16.862 3.487z" />
             </svg>

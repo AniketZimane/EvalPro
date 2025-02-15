@@ -7,11 +7,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +27,13 @@ import java.util.*;
 @Controller
 @RequestMapping("/admin")
 public class MasterController {
+
     @Autowired
     SubjectRepo subjectRepo;
     @Autowired
     StreamRepo streamRepo;
+    @Autowired
+    RegistrationRepo registrationRepo;
     @Autowired
     SemesterRepo semesterRepo;
     @Autowired
@@ -35,6 +42,11 @@ public class MasterController {
     PatternRepo universityPattern;
     @Autowired
     ResultRepo resultRepo;
+    @Autowired
+    RevaluationRequestRepo revaluationRequestRepo;
+    @Autowired
+    private JavaMailSender mailSender;
+
     @GetMapping("paper/analysis/")
     public String getAiAnlysisPage()
     {
@@ -148,8 +160,10 @@ public class MasterController {
     }
 
     @GetMapping("/evaluation/request/")
-    public String getEvaluationRequest()
+    public String getEvaluationRequest(Model model)
     {
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findAll();
+        model.addAttribute("evaluationList",revaluationRequests);
         return "EvaluationRequest";
     }
 
@@ -158,5 +172,145 @@ public class MasterController {
     {
         return "AdminDashboard";
     }
+
+    @GetMapping("/delete/{id}/")
+    public String deleteRecord(Model model, @PathVariable Long id) {
+        revaluationRequestRepo.deleteById(id);
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findAll();
+        model.addAttribute("evaluationList",revaluationRequests);
+        return "EvaluationRequest";
+    }
+
+    @GetMapping("/rechecking/record/")
+    public String getRecheckingRequest(Model model)
+    {
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findAll();
+        model.addAttribute("revaluationRequests",revaluationRequests);
+        return "recheckingRequest";
+    }
+
+    @GetMapping("/evaluation/record/")
+    public String getEvaluation(Model model)
+    {
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findUnevaluatedRevaluationRequests();
+        model.addAttribute("revaluationRequests",revaluationRequests);
+        return "recheckingRequest";
+    }
+
+    @GetMapping("/moderate/record/")
+    public String getModerate(Model model)
+    {
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findEvaluatedButNotModeratedRequests();
+        model.addAttribute("revaluationRequests",revaluationRequests);
+        return "recheckingRequest";
+    }
+
+    @GetMapping("/verify/record/")
+    public String getVerification(Model model)
+    {
+        List<RevaluationRequest> revaluationRequests=revaluationRequestRepo.findEvaluatedModeratedButNotVerifiedRequests();
+        model.addAttribute("revaluationRequests",revaluationRequests);
+        return "recheckingRequest";
+    }
+
+    @GetMapping("/status/update/{id}/")
+    public String getUpdate(@PathVariable Long id, Model model) {
+        System.out.println(id);
+        Optional<RevaluationRequest> optionalRequest = revaluationRequestRepo.findById(id);
+
+        if (optionalRequest.isPresent()) {
+            RevaluationRequest revaluationRequest = optionalRequest.get();
+            System.out.println(revaluationRequest.getSeatNumber());
+            System.out.println(revaluationRequest.getIsModerate());
+            System.out.println(revaluationRequest.getIsEvaluate());
+            System.out.println(revaluationRequest.getIsVerify());
+            // Add required fields to the model
+            model.addAttribute("email", revaluationRequest.getEmail());
+            model.addAttribute("name", revaluationRequest.getfName());
+            model.addAttribute("seatNumber", revaluationRequest.getSeatNumber());
+            model.addAttribute("isModerate", revaluationRequest.getIsModerate());
+            model.addAttribute("isEvaluate", revaluationRequest.getIsEvaluate());
+            model.addAttribute("isVerify", revaluationRequest.getIsVerify());
+
+            return "finalVerificationForm"; // Returning the template
+        } else {
+            model.addAttribute("error", "Revaluation request not found.");
+            return "errorPage"; // Redirect to an error page if ID not found
+        }
+    }
+
+    @PostMapping("/update/status/data/")
+    public String updateRevaluationStatus(
+            @RequestParam("studentId") String studentId,
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("isEvaluate") String isEvaluate,
+            @RequestParam("isModerate") String isModerate,
+            @RequestParam("isVerify") String isVerify,
+            @RequestParam(value = "marksUpdated", required = false) String marksUpdated,
+            @RequestParam(value = "marks", required = false) String marks,
+            @RequestParam(value = "remark", required = false) String reason) {
+
+        if ("no".equalsIgnoreCase(marksUpdated)) {
+            marks = null; // Reset marks if "No" is selected
+            reason = "Not Updated"; // Set remark to "Not Updated"
+        }
+
+        List<RevaluationRequest> revaluationRequests = revaluationRequestRepo.findRevaluationRequestsBySeatNumber(studentId);
+        for (RevaluationRequest data : revaluationRequests) {
+            RevaluationRequest request = new RevaluationRequest(
+                    data.getId(), name, studentId, email, data.getPhone(), data.getCourse(), data.getSemester(),
+                    data.getSubjects(), reason + (marks != null ? marks : ""), data.getIsPayment(), isVerify, isEvaluate,
+                    "Eval123", isModerate, "moderator123", data.getRemark());
+
+            revaluationRequestRepo.save(request);
+            System.out.println("Data updated");
+
+            // **Send Email Notification**
+            try {
+                sendRevaluationEmail(email, name, studentId, isEvaluate, isModerate, isVerify, marksUpdated, marks, reason);
+                System.out.println("Email sent successfully to " + email);
+            } catch (Exception e) {
+                System.err.println("Email sending failed: " + e.getMessage());
+            }
+        }
+
+        return "finalVerificationForm"; // Redirect after update
+    }
+
+    // **Method to send an email notification**
+    private void sendRevaluationEmail(String toEmail, String name, String studentId, String isEvaluate,
+                                      String isModerate, String isVerify, String marksUpdated, String marks, String reason)
+            throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String htmlContent = "<html><body>"
+                + "<h2>Revaluation Status Update</h2>"
+                + "<p>Dear <b>" + name + "</b>,</p>"
+                + "<p>Your request for revaluation/moderation/verification has been processed. Below are the updated details:</p>"
+                + "<div style='background-color: #eef5ff; padding: 15px; border-left: 4px solid #007bff; border-radius: 5px;'>"
+                + "<p><b>Student ID:</b> " + studentId + "</p>"
+                + "<p><b>Evaluation Status:</b> " + isEvaluate + "</p>"
+                + "<p><b>Moderation Status:</b> " + isModerate + "</p>"
+                + "<p><b>Verification Status:</b> " + isVerify + "</p>"
+                + "<p><b>Marks Updated:</b> " + marksUpdated + "</p>"
+                + "<p><b>Updated Marks:</b> " + (marks != null ? marks : "Not Updated") + "</p>"
+                + "<p><b>Remarks:</b> " + reason + "</p>"
+                + "</div>"
+                + "<p>If you have any questions, please contact the administration.</p>"
+                + "<p style='color: #777;'>Regards,<br>University Revaluation Department</p>"
+                + "</body></html>";
+
+        helper.setTo(toEmail);
+        helper.setSubject("Revaluation Status Update");
+        helper.setText(htmlContent, true);
+
+        mailSender.send(message);
+    }
+
+
+
+
 
 }
